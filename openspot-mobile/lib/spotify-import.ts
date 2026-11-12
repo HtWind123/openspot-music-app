@@ -4,10 +4,6 @@ import { PlaylistStorage } from './playlist-storage';
 
 const SPOTIFY_FETCHER_DOMAIN = process.env.EXPO_PUBLIC_SPOTIFY_FETCHER_DOMAIN;
 
-if (!SPOTIFY_FETCHER_DOMAIN) {
-  throw new Error('EXPO_PUBLIC_SPOTIFY_FETCHER_DOMAIN env var is not set');
-}
-
 const SPOTIFY_FETCHER_URL = `https://api.${SPOTIFY_FETCHER_DOMAIN}.com/v2/Transfer`;
 const SPOTIFY_FETCHER_TOKEN_URL = 'https://raw.githubusercontent.com/BlackHatDevX/openspot-config/refs/heads/main/spotify-playlist-token.json';
 
@@ -36,6 +32,10 @@ export async function importSpotifyPlaylist(
   playlistName: string,
   onProgress?: (msg: string, current?: number, total?: number) => void
 ): Promise<{ success: boolean; matched: number; total: number }> {
+  if (!SPOTIFY_FETCHER_DOMAIN) {
+    throw new Error('Spotify playlist import is not configured. You can still search and play music.');
+  }
+
   onProgress?.('Fetching playlist...');
 
   const account = await getSpotifyFetcherToken();
